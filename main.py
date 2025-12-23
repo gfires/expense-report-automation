@@ -59,7 +59,19 @@ def main():
         for i, (expected, actual) in enumerate(results["matched"], 1):
             print(f"\n[Match {i}]")
             print(f"  Expected: {expected.date} | {expected.vendor:30} | ${expected.price:>8.2f}")
-            print(f"  Actual:   {actual.date} | {actual.vendor:30} | ${actual.price:>8.2f}")
+            print(f"  Actual:")
+            print(f"    Date:        {actual.date}")
+            print(f"    Vendor:      {actual.vendor}")
+            print(f"    Price:       ${actual.price:.2f}")
+            print(f"    Description: {actual.description}")
+            print(f"    Activity:    {actual.activity}")
+            print(f"    Receipts:")
+            if actual.receipts:
+                for receipt in actual.receipts:
+                    print(f"      - {receipt}")
+            else:
+                print(f"      (none)")
+            print(f"    Flyer:       {actual.flyer}")
             if expected.vendor:
                 from reconcile import vendor_similarity
                 sim = vendor_similarity(expected.vendor, actual.vendor)
@@ -92,6 +104,13 @@ def main():
             print(f"  Price:       ${actual.price:.2f}")
             print(f"  Description: {actual.description}")
             print(f"  Activity:    {actual.activity}")
+            print(f"  Receipts:")
+            if actual.receipts:
+                for receipt in actual.receipts:
+                    print(f"    - {receipt}")
+            else:
+                print(f"    (none)")
+            print(f"  Flyer:       {actual.flyer}")
     else:
         print("\nNo extra actual expenses")
 
