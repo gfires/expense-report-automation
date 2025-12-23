@@ -5,19 +5,7 @@ from datetime import date, datetime
 import requests
 import tempfile
 import os
-
-
-# ----------------------------
-# Data model
-# ----------------------------
-
-@dataclass
-class ReportItem:
-    description: str
-    activity: str
-    receipts: List[str]
-    flyer: str
-
+from models import ReportItem
 
 # ----------------------------
 # Program number mapping
@@ -111,6 +99,25 @@ def extract_date(cell_value) -> date:
     # Always ISO format: YYYY-MM-DD[ ...]
     return datetime.fromisoformat(str(cell_value).split(" ")[0]).date()
 
+def parse_price(cell_value) -> float:
+    """
+    Parse price from cell value, handling numeric values with or without decimals.
+    """
+    if not cell_value:
+        return 0.0
+
+    # Handle numeric types directly
+    if isinstance(cell_value, (int, float)):
+        return float(cell_value)
+
+    # Handle string values - strip whitespace and dollar signs
+    price_str = str(cell_value).strip().replace("$", "").replace(",", "")
+
+    try:
+        return float(price_str)
+    except ValueError:
+        return 0.0
+
 
 # ----------------------------
 # Core parser
@@ -150,9 +157,11 @@ def parse_purchases(
         E_name = ws[f"E{row}"].value
         F_budget = ws[f"F{row}"].value
         G_endowment = ws[f"G{row}"].value
+        I_price = ws[f"I{row}"].value
         L_flyer = ws[f"L{row}"].value
         M_items = ws[f"M{row}"].value
         N_event = ws[f"N{row}"].value
+        O_vendor = ws[f"O{row}"].value
 
         description_parts = [
             str(E_name),
@@ -174,48 +183,12 @@ def parse_purchases(
             ReportItem(
                 description=description,
                 activity=activity,
+                date=row_date,
+                price=parse_price(I_price),
+                vendor=str(O_vendor) if O_vendor else "",
                 receipts=parse_receipts(D_receipts),
                 flyer=str(L_flyer) if L_flyer else "",
             )
         )
 
     return report_items
-
-# ----------------------------
-# Tests
-# ----------------------------
-
-def main():
-    # Simple test
-    SPREADSHEET_LINK = (
-        "https://docs.google.com/spreadsheets/d/1DVerqZwwyPQY0aLVS2PI_5GItN-5f3uQex4JoJ_RLbE/edit?resourcekey=&gid=1857220607#gid=1857220607"
-    )
-    CARDHOLDER_NAME = "Gavin Firestone (Treasurer)"
-    START_DATE = "11/01/2025"
-
-    try:
-        items = parse_purchases(
-            SPREADSHEET_LINK,
-            CARDHOLDER_NAME,
-            START_DATE
-        )
-
-        print("EXPENSE REPORT ITEMS:")
-        print(f"{'='*60}\n")
-
-        for i, item in enumerate(items, 1):
-            print(f"Item {i}:")
-            print(f"  Description: {item.description}")
-            print(f"  Activity: {item.activity}")
-            print(f"  Receipts: {item.receipts}")
-            print(f"  Flyer: {item.flyer}")
-            print()
-
-    except Exception as e:
-        print(f"\n[ERROR] Failed to parse purchases: {e}")
-        import traceback
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    main()
