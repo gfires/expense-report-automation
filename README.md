@@ -1,225 +1,305 @@
 # Expense Reconciliation Application
 
-Full-stack web application for reconciling expected expenses against actual expenses from Google Sheets.
+Application for Baker College P-Card holders to reconcile expected expenses against actual expenses submitted through the Purchase Form.
 
-## Overview
+## What This Does
 
-This application helps you track and reconcile expected expenses with actual purchases. It:
-- Parses actual expenses from a Google Sheets spreadsheet
-- Matches them against expected expenses you provide
-- Categorizes results into matched, missing expected, and extra actual expenses
+This app helps match expected expenses with actual purchases by:
+- Reading expense data from the spreadsheet storing Purchase Form responses
+- Automatically matching expected expenses with actual transactions
+- Showing you what matched, what's missing, and what's extra
+- Allowing manual matching with drag-and-drop
 
-## Architecture
+## Getting Started
 
-- **Backend**: FastAPI (Python 3.13)
-- **Frontend**: React 18 + TypeScript + Vite
-- **Data Source**: Google Sheets (read-only access via export API)
+### For Non-Technical Users
 
-## Prerequisites
+#### Step 1: Install Required Software
 
-- Python 3.13+
-- Node.js 18+
-- npm or yarn
+You need two programs installed on your computer:
 
-## Installation
+1. **Python 3.13 or higher**
+   - Go to [python.org/downloads](https://www.python.org/downloads/)
+   - Click the yellow "Download Python" button
+   - Run the installer
+   - **IMPORTANT**: Check the box that says "Add Python to PATH" during installation
+   - Click "Install Now"
 
-### 1. Install Backend Dependencies
+2. **Node.js 18 or higher**
+   - Go to [nodejs.org](https://nodejs.org/)
+   - Download the LTS (Long Term Support) version
+   - Run the installer and follow the prompts
+
+#### Step 2: Get the Code
+
+1. Download this project as a ZIP file (or have someone send it to you)
+2. Extract the ZIP file to a location you'll remember (like your Desktop or Documents folder)
+
+#### Step 3: Open Terminal/Command Prompt
+
+**On Mac:**
+- Press `Command + Space` to open Spotlight
+- Type "Terminal" and press Enter
+
+**On Windows:**
+- Press `Windows + R`
+- Type "cmd" and press Enter
+
+#### Step 4: Navigate to the Project Folder
+
+In the terminal, type `cd` followed by a space, then drag and drop the project folder into the terminal window. Press Enter.
+
+For example, it might look like:
+```bash
+cd /Users/YourName/Desktop/expense-report-automation
+```
+
+#### Step 5: Install Dependencies
+
+Copy and paste these commands one at a time into the terminal (press Enter after each):
 
 ```bash
 pip install -r backend/requirements.txt
 ```
 
-### 2. Install Frontend Dependencies
+Wait for it to finish, then:
 
 ```bash
 cd frontend
 npm install
 cd ..
-```
-
-### 3. Install Root Dependencies (for development orchestration)
-
-```bash
 npm install
 ```
 
-## Development
+#### Step 6: Run the App
 
-### Run Both Servers Simultaneously
-
+Type this command and press Enter:
 ```bash
 npm run dev
 ```
 
-This will start:
-- **Backend** at http://localhost:8000
-- **Frontend** at http://localhost:5173
+You should see messages saying the servers are starting. When you see "Local: http://localhost:5173", the app is ready.
 
-Open http://localhost:5173 in your browser to use the application.
+#### Step 7: Open the App
 
-### Run Servers Separately
+Open your web browser (Chrome, Firefox, Safari, etc.) and go to:
+```
+http://localhost:5173
+```
 
-If you prefer to run them separately:
+The app should now be running!
+
+#### Step 8: Stop the App
+
+When you're done using the app:
+- Go back to the terminal window
+- Press `Ctrl+C` (Windows/Mac) to stop the servers
+- You can close the terminal window
+
+### For Technical Users
+
+#### Prerequisites
+
+- Python 3.13+
+- Node.js 18+
+- npm or yarn
+
+#### Quick Start
 
 ```bash
-# Terminal 1: Backend
-uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000
+# Install dependencies
+pip install -r backend/requirements.txt
+cd frontend && npm install && cd ..
+npm install
 
-# Terminal 2: Frontend
-cd frontend && npm run dev
+# Run dev servers
+npm run dev
 ```
 
-## API Documentation
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Interactive API documentation is available at http://localhost:8000/docs when the backend is running.
+## How to Use
 
-### POST /reconcile
-
-Reconcile expected expenses against actual expenses from Google Sheets.
-
-**Request:**
-```json
-{
-  "cardholder_name": "Gavin Firestone (Treasurer)",
-  "start_date": "2025-11-01",
-  "expected_expenses": "11/1/25 - Trader Joe's - $25.25\n11/3/25 - Target - $9.99"
-}
-```
-
-**Response:**
-```json
-{
-  "matched": [
-    {
-      "expected": {
-        "date": "2025-11-01",
-        "vendor": "Trader Joe's",
-        "price": 25.25
-      },
-      "actual": {
-        "date": "2025-11-01",
-        "vendor": "Trader Joe's",
-        "price": 25.25,
-        "activity": "4600",
-        "description": "...",
-        "receipts": ["https://..."],
-        "flyer": "..."
-      }
-    }
-  ],
-  "unmatched_expected": [...],
-  "unmatched_actual": [...]
-}
-```
-
-### GET /health
-
-Health check endpoint.
-
-**Response:**
-```json
-{
-  "status": "ok"
-}
-```
-
-## Project Structure
-
-```
-.
-├── backend/              # FastAPI backend
-│   ├── api.py           # Main API with /reconcile endpoint
-│   ├── models.py        # Pydantic schemas
-│   └── requirements.txt # Backend dependencies
-├── frontend/            # React frontend
-│   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── api.ts      # API client
-│   │   ├── types.ts    # TypeScript types
-│   │   └── App.tsx     # Main app
-│   ├── vite.config.ts  # Vite configuration
-│   └── package.json    # Frontend dependencies
-├── models.py            # Core data models (existing)
-├── parser.py            # Google Sheets parser (existing)
-├── reconcile.py         # Reconciliation logic (existing)
-└── package.json         # Root orchestration scripts
-```
-
-## Core Functionality
-
-### 1. Parse Google Sheets
-Extracts expense data for a specific cardholder from a hardcoded Google Sheets URL.
-
-### 2. Match Expenses
-Two-phase matching algorithm:
-- **Phase 1**: Exact price match where `price == price AND actual_date >= expected_date`
-- **Phase 2**: Fuzzy matching where `|price_diff| <= $1.00 AND actual_date >= expected_date AND vendor_similarity >= 75%`
-
-### 3. Display Results
-Three categories:
-- **Matched expenses**: Expected + actual pairs
-- **Unmatched expected expenses**: Missing from actual purchases
-- **Unmatched actual expenses**: Extra purchases not in expected list
-
-## Configuration
-
-### Hardcoded Spreadsheet URL
-
-The Google Sheets URL is hardcoded in [backend/api.py](backend/api.py:31):
-
-```python
-HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/1DVerqZwwyPQY0aLVS2PI_5GItN-5f3uQex4JoJ_RLbE/edit?resourcekey=&gid=1857220607#gid=1857220607"
-```
-
-To use a different spreadsheet, update this constant.
-
-### Matching Parameters
-
-Price tolerance and vendor similarity thresholds are set in [backend/api.py](backend/api.py:73-74):
-
-```python
-price_tolerance=1.00       # Max price difference: $1.00
-similarity_threshold=0.75  # Min vendor similarity: 75%
-```
-
-## Usage Guide
-
-1. **Enter Cardholder Name**: The name used to filter transactions in the spreadsheet
-2. **Select Start Date**: Transactions from this date forward will be included
-3. **Paste Expected Expenses**: One per line, format: `MM/DD/YY - Vendor - $Price`
-4. **Click "Reconcile Expenses"**: The app will process and display results
+1. **Select Cardholder Name**: Choose the person whose expenses you want to reconcile from the dropdown
+2. **Pick Start Date**: Only transactions from this date forward will be included
+3. **Paste Expected Expenses**: Copy/paste the list of expected expenses (see format below)
+4. **Click "Reconcile Expenses"**: The app processes and shows results
 
 ### Expected Expenses Format
 
+Paste expenses one per line, directly copied and pasted from Kristen's email:
 ```
 11/1/25 - Trader Joe's - $25.25
 11/3/25 - Target - $9.99
 11/5/25 - $15.00 - Amazon
 ```
 
-Both `MM/DD/YY - Vendor - $Price` and `MM/DD/YY - $Price - Vendor` formats are supported.
+Both `MM/DD/YY - Vendor - $Price` and `MM/DD/YY - $Price - Vendor` work.
+
+## Understanding Results
+
+The app shows three sections:
+
+### ✅ Matched Expenses
+Expected expenses that were successfully matched with actual transactions. No action needed.
+
+### ⚠️ Missing Expected Expenses
+Expected expenses that weren't found in the actual transactions. You can:
+- **Drag and drop** an Extra Actual card to manually match it
+- Click the **✕** button to remove a manual match
+
+### ➕ Extra Actual Expenses
+Actual transactions that don't match any expected expense. These appear as draggable cards with red borders that you can drag to gray placeholder boxes.
+
+## Manual Matching (Drag-and-Drop)
+
+1. Scroll to the **Missing Expected Expenses** section
+2. Find the expense you want to match in the **Extra Actual Expenses** section below
+3. **Drag** the red-bordered card to the gray placeholder box next to the missing expense
+4. To undo: click the **✕** button on the paired card
+
+## Configuration
+
+### Changing the Spreadsheet
+
+Currently, the Purchase Form spreadsheet is hardcoded. If the link changes, edit `backend/api.py` line 31 to update the Google Sheets URL:
+```python
+HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/..."
+```
+
+### Adjusting Matching Rules
+
+Currently, a "match" is considered either an exact price-match or prices within a dollar and
+a close lexical match between the expected and actual Vendor. If you want to change these thresholds, edit `backend/api.py` lines 73-74 to change how strict matching is:
+```python
+price_tolerance=1.00       # Max price difference (in dollars)
+similarity_threshold=0.75  # Min vendor name similarity (0-1)
+```
 
 ## Troubleshooting
 
-### Backend won't start
-- Ensure Python dependencies are installed: `pip install -r backend/requirements.txt`
-- Check that you're running from the project root directory
-- Verify port 8000 is not already in use
+**App won't start?**
+- Make sure you ran `npm install` from both the root folder and the frontend folder
+- Make sure you ran `pip install -r backend/requirements.txt`
+- Check that ports 8000 and 5173 aren't being used by other programs
 
-### Frontend won't start
-- Ensure frontend dependencies are installed: `cd frontend && npm install`
-- Check that port 5173 is not already in use
-- Clear Vite cache: `rm -rf frontend/.vite`
+**Can't access Google Sheets?**
+- Verify the spreadsheet URL is correct
+- Make sure the spreadsheet is publicly viewable (Share → Anyone with link can view)
 
-### Google Sheets access fails
-- Verify the spreadsheet URL is correct and publicly accessible
-- Check your internet connection
-- Ensure the spreadsheet has the expected format and sheet name
+**Changes not showing?**
+- Refresh your browser
+- Press `Ctrl+C` to stop the app, then run `npm run dev` again
 
-### CORS errors
-- Ensure both servers are running
-- Verify Vite proxy is configured in [frontend/vite.config.ts](frontend/vite.config.ts)
-- Check that backend CORS middleware allows `http://localhost:5173`
+## Contributing to the App
+
+If you're a developer and want to improve this app, here's how to contribute:
+
+### Getting the Code
+
+1. **Fork the repository** on GitHub (if this is hosted on GitHub)
+   - Click the "Fork" button in the top right
+   - This creates your own copy of the project
+
+2. **Clone your fork** to your local machine:
+```bash
+git clone https://github.com/YOUR-USERNAME/expense-report-automation.git
+cd expense-report-automation
+```
+
+3. **Add the original repository as "upstream"**:
+```bash
+git remote add upstream https://github.com/ORIGINAL-OWNER/expense-report-automation.git
+```
+
+### Making Changes
+
+1. **Create a new branch** for your feature or fix:
+```bash
+git checkout -b feature/your-feature-name
+```
+   Use descriptive branch names like:
+   - `feature/add-export-to-csv`
+   - `fix/date-parsing-bug`
+   - `docs/update-installation-guide`
+
+2. **Make your changes** to the code
+
+3. **Test your changes** thoroughly:
+```bash
+npm run dev
+```
+   Make sure everything works as expected
+
+4. **Commit your changes**:
+```bash
+git add .
+git commit -m "Brief description of what you changed"
+```
+   Write clear, descriptive commit messages
+
+5. **Push to your fork**:
+```bash
+git push origin feature/your-feature-name
+```
+
+### Submitting a Pull Request
+
+1. Go to your fork on GitHub
+2. Click "Pull Request" or "Compare & pull request"
+3. Make sure the base repository is the original and base branch is `main`
+4. Write a clear description of:
+   - What you changed
+   - Why you changed it
+   - How to test it
+5. Click "Create Pull Request"
+
+### Code Guidelines
+
+- **Frontend**: React with TypeScript, follow existing patterns
+- **Backend**: Python with FastAPI, use type hints
+- **Formatting**: Keep code style consistent with existing files
+- **Comments**: Add comments for complex logic
+- **Testing**: Test your changes with real expense data
+
+### Project Structure (Abridged)
+
+- `backend/` - FastAPI Python backend
+  - `api.py` - Main API endpoints
+  - `models.py` - Pydantic schemas
+- `frontend/src/` - React TypeScript frontend
+  - `components/` - React components
+  - `api.ts` - API client
+  - `types.ts` - TypeScript interfaces
+  - `styles/App.css` - Styling
+- `models.py` - Core data models
+- `parser.py` - Google Sheets parser
+- `reconcile.py` - Matching logic
+
+### Development Tips
+
+**Running backend only:**
+```bash
+uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Running frontend only:**
+```bash
+cd frontend && npm run dev
+```
+
+**API documentation:**
+Visit `http://localhost:8000/docs` when backend is running
+
+### Reporting Issues
+
+If you find a bug but don't know how to fix it:
+1. Check if the issue already exists
+2. Create a new issue with:
+   - Clear description of the problem
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Screenshots if applicable
 
 ## License
 

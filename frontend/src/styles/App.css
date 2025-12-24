@@ -344,6 +344,94 @@ main {
   border-color: #dc143c;
 }
 
+/* Missing Expenses Container */
+.missing-expenses-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Extra Expenses Pool - Two Column Grid */
+.extra-expenses-pool {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Draggable Card Styling */
+.draggable-card {
+  cursor: grab;
+  transition: all 0.2s;
+  border: 2px solid #dc143c !important; /* Red border */
+}
+
+.draggable-card:active {
+  cursor: grabbing;
+}
+
+.draggable-card:hover {
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Drop Placeholder */
+.droppable-zone {
+  background: white;
+  border-radius: 6px;
+  border: 2px dashed #e0e0e0;
+  transition: all 0.2s;
+}
+
+.drop-placeholder {
+  padding: 40px 14px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.droppable-zone.drag-over {
+  border-color: #dc143c;
+  background: #fff5f5;
+}
+
+.droppable-zone.drag-over .drop-placeholder {
+  background: #ffe5e5;
+  color: #dc143c;
+}
+
+/* Paired Actual Card */
+.actual.paired {
+  position: relative;
+}
+
+/* Unpair Button */
+.unpair-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #dc143c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.unpair-button:hover {
+  background: #b8102e;
+  transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
   .app {
     padding: 10px;
@@ -389,5 +477,9 @@ main {
   .expense-table th,
   .expense-table td {
     padding: 10px;
+  }
+
+  .extra-expenses-pool {
+    grid-template-columns: 1fr; /* Single column on mobile */
   }
 }
