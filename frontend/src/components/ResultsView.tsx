@@ -69,7 +69,7 @@ function DraggableActualCard({
           {actual.needsAffidavit && (
             <span>
               {actual.receipts.length > 0 && ', '}
-              Affidavit
+              Needs Affidavit
             </span>
           )}
         </p>
@@ -185,7 +185,7 @@ export default function ResultsView({ results }: ResultsViewProps) {
                       {match.actual.needsAffidavit && (
                         <span>
                           {match.actual.receipts.length > 0 && ', '}
-                          Affidavit
+                          Needs Affidavit
                         </span>
                       )}
                     </p>
@@ -254,7 +254,7 @@ export default function ResultsView({ results }: ResultsViewProps) {
                             {pairedActual.needsAffidavit && (
                               <span>
                                 {pairedActual.receipts.length > 0 && ', '}
-                                Affidavit
+                                Needs Affidavit
                               </span>
                             )}
                           </p>

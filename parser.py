@@ -189,7 +189,7 @@ def parse_purchases(
                 vendor=str(O_vendor) if O_vendor else "",
                 receipts=parse_receipts(D_receipts),
                 flyer=str(L_flyer) if L_flyer else "",
-                needsAffidavit=(P_needs_affidavit == "Yes")
+                needsAffidavit=(P_needs_affidavit == "No")
             )
         )
 

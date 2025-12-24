@@ -76,7 +76,7 @@ export default function ExpenseForm({
 
         <div className="form-column-right">
           <div className="form-group">
-            <label htmlFor="expectedExpenses">Expected Expenses (paste from Kristen's email)</label>
+            <label htmlFor="expectedExpenses">Expected Expenses (paste from Kristen's email, format if needed)</label>
             <textarea
               id="expectedExpenses"
               value={expectedExpenses}
@@ -85,7 +85,7 @@ export default function ExpenseForm({
               placeholder="Ex. 11/1/25 - Target - $25.00"
               required
             />
-            <small>Format: MM/DD/YY - Vendor - $Price (one per line)</small>
+            <small>Format: MM/DD/YY - Vendor - $Price (one per line - note only 2 digits for year)</small>
           </div>
         </div>
       </div>
