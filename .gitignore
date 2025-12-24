@@ -136,3 +136,9 @@ dmypy.json
 *.tmp
 *.xlsx
 temp/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+package-lock.json
