@@ -27,7 +27,11 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Expense Reconciliation</h1>
+        <div className="header-content">
+          <img src="/bakerlogo.png" alt="Baker Logo" className="header-logo" />
+          <h1>Baker Expense Report Helper</h1>
+          <img src="/bakerlogo.png" alt="Baker Logo" className="header-logo" />
+        </div>
       </header>
 
       <main>
@@ -38,24 +42,15 @@ function App() {
           </div>
         )}
 
-        {!results && !error && (
-          <ExpenseForm
-            onSuccess={handleReconcile}
-            onError={handleError}
-            onLoadingChange={setLoading}
-          />
-        )}
-
-        {results && (
-          <>
-            <button onClick={handleReset} className="back-button">
-              New Reconciliation
-            </button>
-            <ResultsView results={results} />
-          </>
-        )}
+        <ExpenseForm
+          onSuccess={handleReconcile}
+          onError={handleError}
+          onLoadingChange={setLoading}
+        />
 
         {loading && <div className="loading-spinner">Processing...</div>}
+
+        {results && <ResultsView results={results} />}
       </main>
     </div>
   );

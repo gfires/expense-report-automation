@@ -14,45 +14,45 @@ export default function ResultsView({ results }: ResultsViewProps) {
           <p className="empty-message">No matches found</p>
         ) : (
           results.matched.map((match, index) => (
-            <div key={index} className="match-card">
-              <h3>Match #{index + 1}</h3>
-              <div className="match-pair">
-                <div className="expected">
-                  <h4>Expected</h4>
-                  <p><strong>Date:</strong> {match.expected.date}</p>
-                  <p><strong>Vendor:</strong> {match.expected.vendor}</p>
-                  <p><strong>Price:</strong> ${match.expected.price.toFixed(2)}</p>
-                </div>
-                <div className="actual">
-                  <h4>Actual</h4>
-                  <p><strong>Date:</strong> {match.actual.date}</p>
-                  <p><strong>Vendor:</strong> {match.actual.vendor}</p>
-                  <p><strong>Price:</strong> ${match.actual.price.toFixed(2)}</p>
-                  <p><strong>Activity:</strong> {match.actual.activity}</p>
-                  <p><strong>Description:</strong> {match.actual.description}</p>
-                  {match.actual.receipts.length > 0 && (
-                    <div>
-                      <strong>Receipts:</strong>
-                      <ul>
-                        {match.actual.receipts.map((receipt, i) => (
-                          <li key={i}>
-                            <a href={receipt} target="_blank" rel="noopener noreferrer">
-                              Receipt {i + 1}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {match.actual.flyer && (
-                    <p>
-                      <strong>Flyer:</strong>{' '}
-                      <a href={match.actual.flyer} target="_blank" rel="noopener noreferrer">
-                        View Flyer
-                      </a>
-                    </p>
-                  )}
-                </div>
+            <div key={index} className="match-pair">
+              <div className="expected">
+                <h4>Expected</h4>
+                <p className="inline-info">
+                  <strong>Date:</strong> {match.expected.date} | <strong>Vendor:</strong> {match.expected.vendor} | <strong>Price:</strong> ${match.expected.price.toFixed(2)}
+                </p>
+              </div>
+              <div className="actual">
+                <h4>Actual</h4>
+                <p className="inline-info">
+                  <strong>Date:</strong> {match.actual.date} | <strong>Vendor:</strong> {match.actual.vendor} | <strong>Price:</strong> ${match.actual.price.toFixed(2)}
+                </p>
+                <p><strong>Activity:</strong> {match.actual.activity}</p>
+                <p><strong>Description:</strong> {match.actual.description}</p>
+                {(match.actual.receipts.length > 0 || match.actual.needsAffidavit) && (
+                  <div>
+                    <strong>Receipts:</strong>
+                    <ul>
+                      {match.actual.receipts.map((receipt, i) => (
+                        <li key={i}>
+                          <a href={receipt} target="_blank" rel="noopener noreferrer">
+                            Receipt {i + 1}
+                          </a>
+                        </li>
+                      ))}
+                      {match.actual.needsAffidavit && (
+                        <li>Affidavit</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {match.actual.flyer && (
+                  <p>
+                    <strong>Flyer:</strong>{' '}
+                    <a href={match.actual.flyer} target="_blank" rel="noopener noreferrer">
+                      View Flyer
+                    </a>
+                  </p>
+                )}
               </div>
             </div>
           ))

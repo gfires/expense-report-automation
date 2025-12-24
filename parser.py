@@ -162,6 +162,7 @@ def parse_purchases(
         M_items = ws[f"M{row}"].value
         N_event = ws[f"N{row}"].value
         O_vendor = ws[f"O{row}"].value
+        P_needs_affidavit = ws[f"P{row}"].value
 
         description_parts = [
             str(E_name),
@@ -188,6 +189,7 @@ def parse_purchases(
                 vendor=str(O_vendor) if O_vendor else "",
                 receipts=parse_receipts(D_receipts),
                 flyer=str(L_flyer) if L_flyer else "",
+                needsAffidavit=(P_needs_affidavit == "Yes")
             )
         )
 

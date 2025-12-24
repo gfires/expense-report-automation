@@ -18,6 +18,7 @@ export interface ReportItem {
   vendor: string;
   receipts: string[];
   flyer: string;
+  needsAffidavit: boolean;
 }
 
 export interface MatchedPair {

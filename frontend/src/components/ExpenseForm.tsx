@@ -14,11 +14,9 @@ export default function ExpenseForm({
   onError,
   onLoadingChange,
 }: ExpenseFormProps) {
-  const [cardholderName, setCardholderName] = useState('Gavin Firestone (Treasurer)');
-  const [startDate, setStartDate] = useState('2025-11-01');
-  const [expectedExpenses, setExpectedExpenses] = useState(
-    '11/1/25 - Trader Joe\'s - $25.25\n11/3/25 - Target - $9.99'
-  );
+  const [cardholderName, setCardholderName] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [expectedExpenses, setExpectedExpenses] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,44 +42,59 @@ export default function ExpenseForm({
 
   return (
     <form onSubmit={handleSubmit} className="expense-form">
-      <div className="form-group">
-        <label htmlFor="cardholderName">Cardholder Name</label>
-        <input
-          id="cardholderName"
-          type="text"
-          value={cardholderName}
-          onChange={(e) => setCardholderName(e.target.value)}
-          required
-        />
+      <div className="form-columns">
+        <div className="form-column-left">
+          <div className="form-group">
+            <label htmlFor="cardholderName">Cardholder Name</label>
+            <select
+              id="cardholderName"
+              value={cardholderName}
+              onChange={(e) => setCardholderName(e.target.value)}
+              required
+            >
+              <option value="">Select Cardholder</option>
+              <option value="Shammas Ahmed (Treasurer)">Shammas Ahmed (Treasurer)</option>
+              <option value="Gavin Firestone (Treasurer)">Gavin Firestone (Treasurer)</option>
+              <option value="Alex Rubio (President)">Alex Rubio (President)</option>
+              <option value="Sami Johnson (IVP)">Sami Johnson (IVP)</option>
+              <option value="Tori Xiao (EVP)">Tori Xiao (EVP)</option>
+              <option value="Eman Fayyaz (CVP)">Eman Fayyaz (CVP)</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="startDate">Start Date</label>
+            <input
+              id="startDate"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-column-right">
+          <div className="form-group">
+            <label htmlFor="expectedExpenses">Expected Expenses (paste from Kristen's email)</label>
+            <textarea
+              id="expectedExpenses"
+              value={expectedExpenses}
+              onChange={(e) => setExpectedExpenses(e.target.value)}
+              rows={10}
+              placeholder="Ex. 11/1/25 - Target - $25.00"
+              required
+            />
+            <small>Format: MM/DD/YY - Vendor - $Price (one per line)</small>
+          </div>
+        </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="startDate">Start Date</label>
-        <input
-          id="startDate"
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          required
-        />
+      <div className="form-button-container">
+        <button type="submit" className="submit-button">
+          Reconcile Expenses
+        </button>
       </div>
-
-      <div className="form-group">
-        <label htmlFor="expectedExpenses">Expected Expenses</label>
-        <textarea
-          id="expectedExpenses"
-          value={expectedExpenses}
-          onChange={(e) => setExpectedExpenses(e.target.value)}
-          rows={10}
-          placeholder="11/1/25 - Vendor - $25.00"
-          required
-        />
-        <small>Format: MM/DD/YY - Vendor - $Price (one per line)</small>
-      </div>
-
-      <button type="submit" className="submit-button">
-        Reconcile Expenses
-      </button>
     </form>
   );
 }

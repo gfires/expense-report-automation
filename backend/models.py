@@ -5,7 +5,7 @@ from typing import List
 class ReconcileRequest(BaseModel):
     cardholder_name: str = Field(..., min_length=1, description="Name of cardholder to filter")
     start_date: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="Start date in YYYY-MM-DD format")
-    expected_expenses: str = Field(..., description="Expected expenses text block (MM/DD/YY - Vendor - $Price)")
+    expected_expenses: str = Field(..., description="Expected expenses text block (paste from Kristen's email)")
 
     class Config:
         json_schema_extra = {
@@ -40,6 +40,7 @@ class ReportItemSchema(BaseModel):
     vendor: str
     receipts: List[str]
     flyer: str
+    needsAffidavit: bool
 
     @classmethod
     def from_dataclass(cls, item):
@@ -51,7 +52,8 @@ class ReportItemSchema(BaseModel):
             price=item.price,
             vendor=item.vendor,
             receipts=item.receipts,
-            flyer=item.flyer
+            flyer=item.flyer,
+            needsAffidavit=item.needsAffidavit
         )
 
 

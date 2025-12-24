@@ -11,6 +11,7 @@ class ReportItem:
     vendor: str
     receipts: List[str]
     flyer: str
+    needsAffidavit: bool = False
 
 @dataclass
 class ExpectedExpense:
