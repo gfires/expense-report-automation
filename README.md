@@ -1,4 +1,4 @@
-# Expense Reconciliation Application
+# Baker Expense Report Helper Application
 
 Application for Baker College P-Card holders to reconcile expected expenses against actual expenses submitted through the Purchase Form.
 
