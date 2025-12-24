@@ -22,7 +22,7 @@ You need two programs installed on your computer:
    - Go to [python.org/downloads](https://www.python.org/downloads/)
    - Click the yellow "Download Python" button
    - Run the installer
-   - **IMPORTANT**: Check the box that says "Add Python to PATH" during installation
+   - **IMPORTANT**: Windows users: check the box that says "Add Python to PATH" during installation
    - Click "Install Now"
 
 2. **Node.js 18 or higher**
@@ -59,7 +59,7 @@ cd /Users/YourName/Desktop/expense-report-automation
 Copy and paste these commands one at a time into the terminal (press Enter after each):
 
 ```bash
-pip install -r backend/requirements.txt
+python3 -m pip install -r backend/requirements.txt
 ```
 
 Wait for it to finish, then:
@@ -71,6 +71,7 @@ cd ..
 npm install
 ```
 
+(The frontend and backend have different dependencies, so npm install must be run in both places.)
 #### Step 6: Run the App
 
 Type this command and press Enter:
@@ -162,7 +163,7 @@ Actual transactions that don't match any expected expense. These appear as dragg
 
 ### Changing the Spreadsheet
 
-Currently, the Purchase Form spreadsheet is hardcoded. If the link changes, edit `backend/api.py` line 31 to update the Google Sheets URL:
+Currently, the Purchase Form spreadsheet is hardcoded. If the link changes, edit `backend/api.py` to update the Google Sheets URL:
 ```python
 HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/..."
 ```
@@ -170,7 +171,7 @@ HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/..
 ### Adjusting Matching Rules
 
 Currently, a "match" is considered either an exact price-match or prices within a dollar and
-a close lexical match between the expected and actual Vendor. If you want to change these thresholds, edit `backend/api.py` lines 73-74 to change how strict matching is:
+a close lexical match between the expected and actual Vendor. If you want to change these thresholds, edit `backend/api.py` to change how strict matching is:
 ```python
 price_tolerance=1.00       # Max price difference (in dollars)
 similarity_threshold=0.75  # Min vendor name similarity (0-1)
