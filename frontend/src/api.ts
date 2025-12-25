@@ -53,3 +53,34 @@ export async function checkHealth(): Promise<{ status: string }> {
   const response = await fetch(`${API_BASE_URL}/health`);
   return await response.json();
 }
+
+export interface AffidavitRequest {
+  vendor: string;
+  price: number;
+  date: string;  // YYYY-MM-DD
+  cardholder_name: string;
+}
+
+export async function generateAffidavit(request: AffidavitRequest): Promise<Blob> {
+  const response = await fetch(`${API_BASE_URL}/api/generate-affidavit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    let errorMessage = 'Failed to generate affidavit';
+    try {
+      const error = await response.json();
+      errorMessage = error.detail || errorMessage;
+    } catch {
+      // If JSON parsing fails, use status text
+      errorMessage = `${errorMessage}: ${response.statusText}`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  return await response.blob();
+}

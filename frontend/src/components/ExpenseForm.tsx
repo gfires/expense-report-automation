@@ -4,7 +4,7 @@ import { reconcileExpenses } from '../api';
 import type { ReconcileResponse } from '../types';
 
 interface ExpenseFormProps {
-  onSuccess: (response: ReconcileResponse) => void;
+  onSuccess: (response: ReconcileResponse, cardholderName: string) => void;
   onError: (error: string) => void;
   onLoadingChange: (loading: boolean) => void;
 }
@@ -28,7 +28,7 @@ export default function ExpenseForm({
         start_date: startDate,
         expected_expenses: expectedExpenses,
       });
-      onSuccess(response);
+      onSuccess(response, cardholderName);
     } catch (error) {
       if (error instanceof Error) {
         onError(error.message);

@@ -8,9 +8,11 @@ function App() {
   const [results, setResults] = useState<ReconcileResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cardholderName, setCardholderName] = useState<string>('');
 
-  const handleReconcile = (response: ReconcileResponse) => {
+  const handleReconcile = (response: ReconcileResponse, cardholder: string) => {
     setResults(response);
+    setCardholderName(cardholder);
     setError(null);
   };
 
@@ -22,6 +24,7 @@ function App() {
   const handleReset = () => {
     setResults(null);
     setError(null);
+    setCardholderName('');
   };
 
   return (
@@ -50,7 +53,7 @@ function App() {
 
         {loading && <div className="loading-spinner">Processing...</div>}
 
-        {results && <ResultsView results={results} />}
+        {results && <ResultsView results={results} cardholderName={cardholderName} />}
       </main>
     </div>
   );

@@ -3,9 +3,11 @@ import type { ReconcileResponse, ReportItem, ExpectedExpense } from '../types';
 import { DndContext, PointerSensor, useSensor, useSensors, useDroppable, useDraggable, pointerWithin } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { generateAffidavit } from '../api';
 
 interface ResultsViewProps {
   results: ReconcileResponse;
+  cardholderName: string;
 }
 
 // Helper component for droppable zones
@@ -86,7 +88,7 @@ function DraggableActualCard({
   );
 }
 
-export default function ResultsView({ results }: ResultsViewProps) {
+export default function ResultsView({ results, cardholderName }: ResultsViewProps) {
   const [manualPairings, setManualPairings] = useState<Map<string, ReportItem>>(new Map());
 
   const sensors = useSensors(
@@ -96,6 +98,30 @@ export default function ResultsView({ results }: ResultsViewProps) {
       },
     })
   );
+
+  const handleDownloadAffidavit = async (expected: ExpectedExpense) => {
+    try {
+      const blob = await generateAffidavit({
+        vendor: expected.vendor,
+        price: expected.price,
+        date: expected.date,
+        cardholder_name: cardholderName,
+      });
+
+      // Trigger download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `affidavit_${expected.vendor.replace(/\s+/g, '_')}_${expected.date}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to generate affidavit:', error);
+      alert('Failed to generate affidavit. Please try again.');
+    }
+  };
 
   // Create unique ID for expected expense
   const getExpectedId = (exp: ExpectedExpense, index: number) =>
@@ -185,7 +211,16 @@ export default function ResultsView({ results }: ResultsViewProps) {
                       {match.actual.needsAffidavit && (
                         <span>
                           {match.actual.receipts.length > 0 && ', '}
-                          Needs Affidavit
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleDownloadAffidavit(match.expected);
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            Download Affidavit
+                          </a>
                         </span>
                       )}
                     </p>
