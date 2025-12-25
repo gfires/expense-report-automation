@@ -5,6 +5,10 @@ from datetime import datetime
 import sys
 from pathlib import Path
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv(".env.local")
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -35,7 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/1DVerqZwwyPQY0aLVS2PI_5GItN-5f3uQex4JoJ_RLbE/edit?resourcekey=&gid=1857220607#gid=1857220607"
+HARDCODED_SPREADSHEET = os.getenv("SPREADSHEET_LINK")
 
 
 @app.get("/health")
