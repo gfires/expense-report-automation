@@ -13,7 +13,7 @@ This app helps match expected expenses with actual purchases by:
 
 ## Getting Started
 
-### For Non-Technical Users
+### For Non-Technical First-Time Users
 
 #### Step 1: Install Required Software
 
@@ -34,7 +34,7 @@ You need two programs installed on your computer:
 #### Step 2: Get the Code
 
 1. Download this project as a ZIP file (or have someone send it to you)
-2. Extract the ZIP file to a location you'll remember (like your Desktop or Documents folder)
+2. **Double-click the ZIP file** to unzip/extract it
 
 #### Step 3: Open Terminal/Command Prompt
 
@@ -55,7 +55,25 @@ For example, it might look like:
 cd /Users/YourName/Desktop/expense-report-automation
 ```
 
-#### Step 5: Install Dependencies
+#### Step 5: Create and Activate a Virtual Environment
+
+Before installing Python dependencies, you need to create a virtual environment:
+
+**On Mac/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**On Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+You should see `(venv)` appear at the beginning of your terminal prompt.
+
+#### Step 6: Install Dependencies
 
 Copy and paste these commands one at a time into the terminal (press Enter after each):
 
@@ -73,7 +91,8 @@ npm install
 ```
 
 (The frontend and backend have different dependencies, so npm install must be run in both places.)
-#### Step 6: Run the App
+
+#### Step 7: Run the App
 
 Type this command and press Enter:
 ```bash
@@ -109,6 +128,10 @@ When you're done using the app:
 #### Quick Start
 
 ```bash
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
 # Install dependencies
 pip install -r backend/requirements.txt
 cd frontend && npm install && cd ..
@@ -119,6 +142,20 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### For Repeat Users
+
+If you've already set up the app and just want to run it again:
+
+1. **Open Terminal/Command Prompt** (see Step 3)
+2. **Navigate to the project folder** (see Step 4)
+3. **Activate the virtual environment**:
+   - **Mac/Linux**: `source venv/bin/activate`
+   - **Windows**: `venv\Scripts\activate`
+4. **Run the app**: `npm run dev`
+5. **Open your browser** to [http://localhost:5173](http://localhost:5173)
+
+You only need to install dependencies (Step 6) once, unless the project is updated.
 
 ## How to Use
 
@@ -142,7 +179,7 @@ This generates filled affidavit PDFs with the vendor, price, date, and cardholde
 
 ### Expected Expenses Format
 
-Paste expenses one per line, directly copied and pasted from Kristen's email:
+Paste expenses one per line, directly copied and pasted from Kristen's email - for example:
 ```
 11/1/25 - Trader Joe's - $25.25
 11/3/25 - Target - $9.99
