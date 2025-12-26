@@ -9,6 +9,7 @@ This app helps match expected expenses with actual purchases by:
 - Automatically matching expected expenses with actual transactions
 - Showing you what matched, what's missing, and what's extra
 - Allowing manual matching with drag-and-drop
+- Generating affidavits for expenses that require them
 
 ## Getting Started
 
@@ -121,10 +122,23 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## How to Use
 
+### Reconciling Expenses
+
 1. **Select Cardholder Name**: Choose the person whose expenses you want to reconcile from the dropdown
 2. **Pick Start Date**: Only transactions from this date forward will be included
-3. **Paste Expected Expenses**: Copy/paste the list of expected expenses (see format below)
-4. **Click "Reconcile Expenses"**: The app processes and shows results
+3. **Paste Purchase Form Spreadsheet Link**: Link to the Google Sheets with actual purchase data
+4. **Paste Expected Expenses**: Copy/paste the list of expected expenses (see format below)
+5. **Click "Reconcile Expenses"**: The app processes and shows results
+
+### Generating Affidavits (Without Reconciliation)
+
+If you just need affidavits for all expected expenses without reconciling:
+
+1. **Fill out all form fields** as above
+2. **Click "Generate Affidavits"**: Opens a modal with all expected expenses
+3. **Download individual affidavits**: Click the "Download" button next to each expense
+
+This generates filled affidavit PDFs with the vendor, price, date, and cardholder signature.
 
 ### Expected Expenses Format
 
@@ -139,10 +153,13 @@ Both `MM/DD/YY - Vendor - $Price` and `MM/DD/YY - $Price - Vendor` work.
 
 ## Understanding Results
 
-The app shows three sections:
+The app shows three sections after reconciliation:
 
 ### ✅ Matched Expenses
-Expected expenses that were successfully matched with actual transactions. No action needed.
+Expected expenses that were successfully matched with actual transactions.
+
+- If a matched expense requires an affidavit, you'll see a **"Download Affidavit"** link
+- Click the link to generate and download a filled affidavit PDF
 
 ### ⚠️ Missing Expected Expenses
 Expected expenses that weren't found in the actual transactions. You can:
@@ -268,11 +285,22 @@ git push origin feature/your-feature-name
 - `backend/` - FastAPI Python backend
   - `api.py` - Main API endpoints
   - `models.py` - Pydantic schemas
+  - `pdf_generator.py` - Affidavit PDF generation
+  - `templates/` - PDF templates and fonts
+    - `blank_affidavit.pdf` - Blank affidavit template
+    - `fonts/` - Custom fonts for PDFs
 - `frontend/src/` - React TypeScript frontend
   - `components/` - React components
+    - `ExpenseForm.tsx` - Main form with two buttons
+    - `ResultsView.tsx` - Reconciliation results
+    - `AffidavitsModal.tsx` - Modal for generating affidavits
+  - `utils/` - Utility functions
+    - `parseExpenses.ts` - Frontend expense parser
   - `api.ts` - API client
   - `types.ts` - TypeScript interfaces
-  - `styles/App.css` - Styling
+  - `styles/` - CSS styling
+    - `App.css` - Main app styles
+    - `Modal.css` - Modal styles
 - `models.py` - Core data models
 - `parser.py` - Google Sheets parser
 - `reconcile.py` - Matching logic
