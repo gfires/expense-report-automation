@@ -6,6 +6,7 @@ class ReconcileRequest(BaseModel):
     cardholder_name: str = Field(..., min_length=1, description="Name of cardholder to filter")
     start_date: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="Start date in YYYY-MM-DD format")
     expected_expenses: str = Field(..., description="Expected expenses text block (paste from Kristen's email)")
+    sheet_link: str = Field(..., description="Link to the Google Sheets purchase form spreadsheet")
 
     class Config:
         json_schema_extra = {

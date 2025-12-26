@@ -2,6 +2,7 @@ export interface ReconcileRequest {
   cardholder_name: string;
   start_date: string;
   expected_expenses: string;
+  sheet_link: string;
 }
 
 export interface ExpectedExpense {

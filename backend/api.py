@@ -5,10 +5,6 @@ from datetime import datetime
 import sys
 from pathlib import Path
 import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv(".env.local")
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -39,8 +35,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-HARDCODED_SPREADSHEET = os.getenv("SPREADSHEET_LINK")
-
 
 @app.get("/health")
 async def health():
@@ -64,7 +58,7 @@ async def reconcile(request: ReconcileRequest):
         start_date_parser = start_date_obj.strftime("%m/%d/%Y")
 
         actual_items = parse_purchases(
-            HARDCODED_SPREADSHEET,
+            request.sheet_link,
             request.cardholder_name,
             start_date_parser
         )

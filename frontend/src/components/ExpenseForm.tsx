@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { reconcileExpenses } from '../api';
 import type { ReconcileResponse } from '../types';
+import AffidavitsModal from './AffidavitsModal';
+import { parseExpectedExpenses, type ParsedExpense } from '../utils/parseExpenses';
 
 interface ExpenseFormProps {
   onSuccess: (response: ReconcileResponse, cardholderName: string) => void;
@@ -16,7 +18,10 @@ export default function ExpenseForm({
 }: ExpenseFormProps) {
   const [cardholderName, setCardholderName] = useState('');
   const [startDate, setStartDate] = useState('');
+  const [sheetLink, setSheetLink] = useState('');
   const [expectedExpenses, setExpectedExpenses] = useState('');
+  const [showAffidavitsModal, setShowAffidavitsModal] = useState(false);
+  const [parsedExpenses, setParsedExpenses] = useState<ParsedExpense[]>([]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,6 +32,7 @@ export default function ExpenseForm({
         cardholder_name: cardholderName,
         start_date: startDate,
         expected_expenses: expectedExpenses,
+        sheet_link: sheetLink,
       });
       onSuccess(response, cardholderName);
     } catch (error) {
@@ -40,8 +46,28 @@ export default function ExpenseForm({
     }
   };
 
+  const handleGenerateAffidavits = () => {
+    // Validate form fields
+    if (!cardholderName || !startDate || !sheetLink || !expectedExpenses) {
+      onError('Please fill out all fields before generating affidavits');
+      return;
+    }
+
+    // Parse expected expenses
+    const expenses = parseExpectedExpenses(expectedExpenses);
+
+    if (expenses.length === 0) {
+      onError('No valid expected expenses found. Check your formatting.');
+      return;
+    }
+
+    setParsedExpenses(expenses);
+    setShowAffidavitsModal(true);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="expense-form">
+    <>
+      <form onSubmit={handleSubmit} className="expense-form">
       <div className="form-columns">
         <div className="form-column-left">
           <div className="form-group">
@@ -72,11 +98,22 @@ export default function ExpenseForm({
               required
             />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="sheetLink">Purchase Form Spreadsheet Link</label>
+            <input
+              id="sheetLink"
+              type="url"
+              value={sheetLink}
+              onChange={(e) => setSheetLink(e.target.value)}
+              required
+            />
+          </div>
         </div>
 
         <div className="form-column-right">
           <div className="form-group">
-            <label htmlFor="expectedExpenses">Expected Expenses (paste from Kristen's email, format if needed)</label>
+            <label htmlFor="expectedExpenses">Expenses (paste from Kristen's email, format if needed)</label>
             <textarea
               id="expectedExpenses"
               value={expectedExpenses}
@@ -91,10 +128,26 @@ export default function ExpenseForm({
       </div>
 
       <div className="form-button-container">
+        <button
+          type="button"
+          onClick={handleGenerateAffidavits}
+          className="submit-button secondary-button"
+        >
+          Generate Affidavits
+        </button>
         <button type="submit" className="submit-button">
           Reconcile Expenses
         </button>
       </div>
-    </form>
+      </form>
+
+      {showAffidavitsModal && (
+        <AffidavitsModal
+          expenses={parsedExpenses}
+          cardholderName={cardholderName}
+          onClose={() => setShowAffidavitsModal(false)}
+        />
+      )}
+    </>
   );
 }
