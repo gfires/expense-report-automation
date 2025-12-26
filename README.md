@@ -177,12 +177,6 @@ Actual transactions that don't match any expected expense. These appear as dragg
 4. To undo: click the **✕** button on the paired card
 
 ## Configuration
-
-### Changing the Spreadsheet
-
-Currently, the Purchase Form spreadsheet is hardcoded. If the link changes, edit `backend/api.py` to update the Google Sheets URL:
-```python
-HARDCODED_SPREADSHEET = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/..."
 ```
 
 ### Adjusting Matching Rules
